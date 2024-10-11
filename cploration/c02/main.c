@@ -75,12 +75,18 @@ char *welcome(char* hello, char* name) {
  */
 void reverse(char* txt, char* result) {
 
-	int i = length(txt);
-	while(i > -1){
-		i--;
+	strcpy(result, txt);
+    
+	int j = -1;
+	int len = length(result);
+	char temp[length(result)];
+	
+    for(int i = 0; i < len; i++){
+		temp[++j] = result[i];
 	}
-	
-	
+	for(int i = 0; i < len; i++){
+		result[i] = temp[j--];
+	}
 }
 
 
@@ -124,24 +130,23 @@ int vowels(char* txt) {
 int quartile(char* name) {
 	
 	int quartile = 0;
-	int i = 0;
+	char alph[26] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
 	
-	int compareG = strcmp(name[i], "g");
-	int compareM = strcmp(name[i], "m");
-	int compareS = strcmp(name[i], "s");
-	int compareZ = strcmp(name[i], "z");
-	
-	if(compareG < 0){
-		quartile = 1;
-	}
-	if(compareG > 0 && compareM < 0){
-		quartile = 2;
-	}
-	if(compareM > 0 && compareS < 0){
-		quartile = 3;
-	}
-	if(compareS >= 0 && compareZ <= 0){
-		quartile = 4;
+	for(int i = 0; i < 26; i++){
+		if(alph[i] == tolower(name[0])){	
+			if(i < 6){
+				quartile = 1;
+			}
+			if(i>=6 && i < 12){
+				quartile = 2;
+			}
+			if(i>=12 && i<18){
+				quartile = 3;
+			}
+			if(i>=18 && i<= 25){
+				quartile = 4;
+			}
+		}
 	}
 	return quartile;
 }
