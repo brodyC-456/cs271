@@ -69,7 +69,7 @@ void parse(FILE * file){
 			inst_type = 'C';
 		}
 		
-		printf("%c %s\n", inst_type, line);
+		printf("%c  %s\n", inst_type, line);
 	}
 	
 }
