@@ -9,3 +9,52 @@
 // the screen should be cleared.
 
 //// Replace this comment with your code.
+
+
+
+
+(ISET)
+
+    @8192
+    D=A
+    @i
+    M=D
+
+(ILOOP)
+
+    @i
+    M=M-1
+    D=M
+    @ISET
+    D;JLT
+
+(KEYPRESSED)
+    @KBD
+    D=M
+    @BLACK_LOOP
+    D;JGT
+    @WHITE_LOOP
+    D;JEQ
+    0;JMP
+
+
+(BLACK_LOOP)
+
+    @SCREEN
+    D=A
+    @i
+    A=D+M
+    M=-1
+    @ILOOP
+    0;JMP
+
+
+(WHITE_LOOP)
+
+    @SCREEN
+    D=A
+    @i
+    A=D+M
+    M=0
+    @ILOOP
+    0;JMP
