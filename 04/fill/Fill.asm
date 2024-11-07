@@ -11,8 +11,6 @@
 //// Replace this comment with your code.
 
 
-
-
 (ISET)
 
     @8192
@@ -58,3 +56,12 @@
     M=0
     @ILOOP
     0;JMP
+
+
+
+
+
+
+
+
+
