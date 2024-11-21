@@ -33,4 +33,49 @@ CHIP CPU {
 
     PARTS:
 	//// Replace this comment with your code.
+
+    // A type or C type
+    Not(in=instruction[15], out=ainstruction);
+    Not(in=ainstruction, out=cinstruction);
+
+    And(a=cinstruction, b=instruction[5], out=aALU);
+    Mux16(a= instruction, b=ALUOut , sel=aALU, out= aRegisterIn);
+
+    Or(a=ainstruction, b=aALU , out= loadA);
+    ARegister(in= aRegisterIn, load=loadA, out=aOut);
+    
+    Mux16(a=aOut, b=inM, sel= instruction[12], out=aMOut);
+
+    And(a=cinstruction, b=instruction[4], out=loadD);
+    DRegister(in=ALUOut, load=loadD, out= dOut);
+    
+    ALU(x=dOut , y=aMOut, zx= instruction[11], nx=instruction[10], zy= instruction[9], ny= instruction[8], f=instruction[7] , no=instruction[6] , out= ALUOut, zr= zrOut, ng= ngOut);
+
+    // Setting up outputs
+    Or16(a= false, b=aOut , out[0..14]= addressM);
+    Or16(a= false, b= ALUOut, out= outM);
+    And(a= cinstruction, b=instruction[3] , out=writeM);
+
+    // Checking for Jumps
+    And(a= zrOut, b= instruction[1], out=JEQ);
+    And(a= ngOut, b= instruction[2], out= JLT);
+    Or(a= zrOut, b= ngOut, out= negativeOut);
+    Not(in= negativeOut, out= positiveOut);
+    And(a=positiveOut, b=instruction[0], out= JGT);
+    Or(a=JLT, b=JEQ, out=JLE);
+    Or(a=JGT, b=JLE, out=jumpToA);
+    And(a=jumpToA, b=cinstruction, out=pcLoad);
+    Not(in=pcLoad, out=pcInc);
+
+    PC(in= aOut, load=pcLoad , inc=pcInc , reset=reset, out[0..14] = pc);
+
+
+
+
+
+
+
+
+
+
 }
