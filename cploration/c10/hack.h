@@ -73,7 +73,7 @@ typedef enum comp_id{
 	COMP_INVALID = -1,
 	COMP_0 = 42,
 	COMP_1 = 63,
-	COMP_NEG_1 = 57,
+	COMP_NEG_1 = 58,
 	COMP_D = 12,
 	COMP_A = 48,
 	COMP_NOT_D = 13,
@@ -250,47 +250,46 @@ static inline comp_id str_to_compid(const char *s, int *a){
 	
 	// A now equals 1
 	
-	else if(strcmp(s, "M")){
-		*a = 1;
+	else if(strcmp(s, "M") == 0){
 		id = COMP_M;
-	}
-	else if(strcmp(s, "!M")){
 		*a = 1;
+	}
+	else if(strcmp(s, "!M") == 0){
 		id = COMP_NOT_M;
-	}
-	else if(strcmp(s, "-M")){
 		*a = 1;
+	}
+	else if(strcmp(s, "-M") == 0){
 		id = COMP_NOT_M;
-	}
-	else if(strcmp(s, "M+1")){
 		*a = 1;
+	}
+	else if(strcmp(s, "M+1") == 0){
 		id = COMP_M_PLUS_1;
-	}
-	else if(strcmp(s, "M-1")){
 		*a = 1;
+	}
+	else if(strcmp(s, "M-1") == 0){
 		id = COMP_M_MINUS_1;
-	}
-	else if(strcmp(s, "D+M")){
 		*a = 1;
+	}
+	else if(strcmp(s, "D+M") == 0){
 		id = COMP_D_PLUS_M;
-	}
-	else if(strcmp(s, "D-M")){
 		*a = 1;
+	}
+	else if(strcmp(s, "D-M") == 0){
 		id = COMP_D_MINUS_M;
-	}
-	else if(strcmp(s, "M-D")){
 		*a = 1;
+	}
+	else if(strcmp(s, "M-D") == 0){
 		id = COMP_M_MINUS_D;
-	}
-	else if(strcmp(s, "D&M")){
 		*a = 1;
+	}
+	else if(strcmp(s, "D&M") == 0){
 		id = COMP_D_AND_M;
-	}
-	else if(strcmp(s, "D|M")){
 		*a = 1;
-		id = COMP_D_OR_M;
 	}
-	
+	else if(strcmp(s, "D|M") == 0){
+		id = COMP_D_OR_M;
+		*a = 1;
+	}
 	return id;
 }
 

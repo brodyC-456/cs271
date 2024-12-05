@@ -49,21 +49,22 @@ char *strip(char *s){
  */
  
  
-void parse(FILE * file){
+int parse(FILE * file, instruction *instructions){
 	
 	// your code here
 	instruction instr;
 	char line[MAX_LINE_LENGTH] = {0};
 	char label[MAX_LABEL_LENGTH];
-	//char inst_type = 'D';
+	char inst_type = 'D';
 	unsigned int line_num = 0;
 	unsigned int instruction_num = 0;
 	add_predefined_symbols();
+	char tmp_line[MAX_LINE_LENGTH];
 	
 	while (fgets(line, sizeof(line), file)){	
 	
 		line_num++;
-		//inst_type = 'D';
+		inst_type = 'D';
 		strip(line);
 		
 		if(!*line){
@@ -71,9 +72,8 @@ void parse(FILE * file){
 		}
 		
 		if(is_label(line)){
-			//inst_type = 'L';
+			inst_type = 'L';
 			strcpy(line, extract_label(line, label));
-			
 			if(isalpha(label[0]) == 0){
 				exit_program(EXIT_INVALID_LABEL, line_num, line);
 			}
@@ -89,20 +89,40 @@ void parse(FILE * file){
 				exit_program(EXIT_INVALID_A_INSTR, line_num, line);
 			}
 			instr.instruction_type = AType;
-			//inst_type = 'A';
+			inst_type = 'A';
+			if(instr.instr.a.is_addr){
+				printf("A: %d\n", instr.instr.a.type.address);
+			}
+			else{
+				printf("A: %s\n", instr.instr.a.type.label);
+			}
 		}
 		if(is_CType(line)){
-			//inst_type = 'C';
+			inst_type = 'C';
+			strcpy(tmp_line, line);
+			parse_C_instruction(tmp_line, &instr.instr.c);
+			if(instr.instr.c.jump == JMP_INVALID){
+				exit_program(EXIT_INVALID_C_JUMP, line_num, line);	
+			}
+			if(instr.instr.c.dest == DEST_INVALID){
+				exit_program(EXIT_INVALID_C_DEST, line_num, line);	
+			}
+			if(instr.instr.c.comp == COMP_INVALID){
+				exit_program(EXIT_INVALID_C_COMP, line_num, line);	
+			}
+			instr.instruction_type = CType;
+			printf("C: d=%d, c=%d, j=%d\n", instr.instr.c.dest, instr.instr.c.comp, instr.instr.c.jump);
+			
 		}
 		
 		
 		//printf("%u: %c  %s\n", instruction_num, inst_type, line);
-		instruction_num++;
+		instructions[instruction_num++] = instr;
 		if(instruction_num > MAX_INSTRUCTIONS){
 			exit_program(EXIT_TOO_MANY_INSTRUCTIONS, MAX_INSTRUCTIONS + 1);
 		}
 	}
-	
+	return instruction_num;
 }
 
 bool is_Atype(const char *line){
@@ -153,34 +173,27 @@ void add_predefined_symbols(){
 	}
 }
 
+
 bool parse_A_instruction(const char *line, a_instruction *instr){
-    char* s = malloc(strlen(line)*sizeof(char));
+    char *s = (char*)malloc(strlen(line));
     strcpy(s, line+1);
-    for(int i = 0; i < NUM_PREDEFINED_SYMBOLS; i++){
-        if(strcmp(s, predefined_symbols[i].name) == 0){
-            instr->is_addr = true;
-            instr-> type.address = predefined_symbols[i].address;
-            free(s);
-            return true;
-        }
-    }
-
-    char* s_end = NULL;
-    long result = strtol(s, &s_end,10);
-
-    if(s == s_end){
-        instr->is_addr = false;
-        instr->type.label = malloc(strlen(s)*sizeof(char) + 1);
-        strcpy(instr->type.label, s);
-    } else if(*s_end != 0){
-        free(s);
-        return false;
-    } else{
-        instr->is_addr = true;
-        instr->type.address = result;
-    }
+    char *s_end = NULL;
     
-    free(s);
+    long result = strtol(s, &s_end, 10);
+
+    //printf("label: %s\n", s_end);
+
+    if (s == s_end){
+        instr->type.label = (char*)malloc(strlen(line));
+        strcpy(instr->type.label, s);
+        instr->is_addr = false;
+       
+    }else if (*s_end != 0){
+        return false;
+    }else{
+        instr->type.address = result;
+        instr->is_addr = true;
+    }
     return true;
 }
 
@@ -202,9 +215,12 @@ void parse_C_instruction(char *line, c_instruction *instr){
 		dest = NULL;
 	}
 	
+	int a;
 	instr-> jump = jump ? str_to_jumpid(jump) : JMP_NULL;
 	instr-> dest = dest ? str_to_destid(dest) : DEST_NULL;
 	instr-> comp = str_to_compid(comp, &a);
+	instr-> a=a;
+	
 }
 
 
