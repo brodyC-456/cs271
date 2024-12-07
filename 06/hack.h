@@ -35,7 +35,7 @@
   (opcode & 0x8 ? '1' : '0'), \
   (opcode & 0x4 ? '1' : '0'), \
   (opcode & 0x2 ? '1' : '0'), \
-  (opcode & 0x1 ? '1' : '0'), \
+  (opcode & 0x1 ? '1' : '0')
 
 typedef enum symbol_id {
 	R0 = 0,
