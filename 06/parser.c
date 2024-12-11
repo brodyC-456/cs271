@@ -247,7 +247,8 @@ void assemble(const char * file_name, instruction* instructions, int num_instruc
 					new++;
 				}
 				else{
-					op = instructions[i].instr.a.type.address;
+					struct Symbol* sym = symtable_find(instructions[i].instr.a.type.label);
+					op = sym->addr;
 				}
 				free(instructions[i].instr.a.type.label);
 			}
