@@ -238,7 +238,7 @@ void assemble(const char * file_name, instruction* instructions, int num_instruc
 	for(int i = 0; i < num_instructions; i++){
 		if(instructions[i].instruction_type == AType){
 			if(instructions[i].instr.a.is_addr){
-				op = instructions[i].instr.a.type.address & 0x7FFF;
+				op = instructions[i].instr.a.type.address;
 			}
 			else{
 				if(symtable_find(instructions[i].instr.a.type.label) == NULL){
